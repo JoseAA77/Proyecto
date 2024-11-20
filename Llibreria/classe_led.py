@@ -9,6 +9,7 @@ class LED:
         GPIO.setmode(GPIO.BCM)  
         GPIO.setup(self.pin, GPIO.OUT) 
         self.state = False  
+        self.temps_anterior = time.time()
     
     def encen(self):
         """Encén el LED."""
@@ -29,15 +30,13 @@ class LED:
 
         self.pwm.duty_u16(intensitat)
 
-    def parpelleig(self, temps):
-        """Canvia l'intensitat del LED."""
+    def pampalluga(self, temps):
+        """Canvia l'estat del LED cada X segoons, sen X la cuantitat introduida."""
         start_time = time.time()
-
-        while True:
+        
+        if start_time - self.temps_anterior >= temps:
             self.alternar()
-            time.sleep(1)
-            if time.time() - start_time >= temps:
-                break
+            self.temps_anterior = start_time
        
     def alternar(self):
         """Canvia l'estat del LED."""
