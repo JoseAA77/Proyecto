@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import time
 
 class Pulsador:
-    def __init__(self, pin, state):
+    def __init__(self, pin):
         """Constructor del Objeto"""
         self.pin = pin
         GPIO.setmode(GPIO.BCM)  
@@ -19,11 +19,11 @@ class Pulsador:
         
     def mesura_pulsacio(self):
         """Mesura el temps de pulsacio."""
-        temps = 0
+        start_time = time.time()
         while self.detecta_pulsacio() == GPIO.HIGH:
-            temps += 1
-            time.sleep(1)
-        
+            time.sleep(0.001)
+            
+        temps = time.time() - start_time
         return temps
 
  
