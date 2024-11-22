@@ -31,9 +31,7 @@ class Buzzer_Passiu:
 
     def filtre_nota(self, frequencia):
         '''Funció per triar la nota a reproduïr'''
-        if frequencia == '':
-            return (-1) 
-        elif not (isinstance(frequencia, float) or isinstance(frequencia, int)):
+        if not (isinstance(frequencia, float) or isinstance(frequencia, int)):
             try:
                 return (notes[frequencia])
             except KeyError:
