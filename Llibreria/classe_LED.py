@@ -17,13 +17,12 @@ class LED:
     
     def encen(self):
         """Encén el LED."""
-        self.pwm.ChangeDutyCycle(self.intensitats[self.intensitat])
-        self.state = True
-        
+        self.cambia_intensitat(self.intensitats[self.intensitat])
+        self.state = True        
     
     def apaga(self):
         """Apaga el LED."""
-        self.pwm.ChangeDutyCycle(0)
+        self.cambia_intensitat(0)
         self.state = False
     
     '''
@@ -33,7 +32,6 @@ class LED:
         self.pwm.freq(1000)
 
         self.pwm.duty_u16(intensitat)
-    
     '''
     def cambia_intensitat(self, intensitat):
         """Canvia l'intensitat del LED, el rang es de 0 a 100."""
@@ -43,17 +41,13 @@ class LED:
         """Aumenta l'intensitat del LED."""
         if self.intensitat < len(self.intensitats) - 1:
             self.intensitat += 1
-            self.pwm.ChangeDutyCycle(self.intensitats[self.intensitat])
-
-    '''
-    self.intensitat = self.intensitats[self.intensitat+1]
-    self.cambia_intensitat(self.intensitat)
-    '''             
+            self.cambia_intensitat(self.intensitats[self.intensitat])
+           
     def treu_intensitat(self):
         """Disminueix l'intensitat del LED."""
         if self.intensitat > 0:
             self.intensitat -= 1
-            self.pwm.ChangeDutyCycle(self.intensitats[self.intensitat])    
+            self.cambia_intensitat(self.intensitats[self.intensitat])  
 
     def pampalluga(self, temps):
         """Canvia l'estat del LED cada X segoons, sen X la cuantitat introduida."""
