@@ -6,9 +6,14 @@ import os
 class WIFI():
     
     def __init__(self, raspberry_ip = '0.0.0.0', raspberry_port = 12346, esp32_ip = '192.168.4.1', esp32_port = 12345):
+        # Sortides comprovació estat WIFI
+        self.actiu, self.conectat, self.comunicant = False, False, False
+        
         # Configura el servidor TCP de la Raspberry Pi
         self.raspberry_ip = '0.0.0.0'
         self.raspberry_port = 12346  # Port del servidor de la Raspberry Pi
+
+        self.actiu = True
 
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind((raspberry_ip, raspberry_port))
@@ -18,14 +23,21 @@ class WIFI():
         self.esp32_ip = esp32_ip      # Ip del ESP32
         self.esp32_port = esp32_port  # Port del servidor TCP de l'ESP32
 
+        self.conectat = True
+        
         self.reiniciWIFI = 0
+        
+
+        
         
         
     def WIFI_reinicia(self, espera = 1):
         self.WIFI_desconecta(espera)
+        self.actiu, self.conectat, self.comunicant = False, False, False
         self.WIFI_scan(espera * 1)
+        self.actiu = True
         self.WIFI_conecta(espera * 3)
-    
+        self.conectat = True
     
     def WIFI_desconecta(self, espera = 1):
         os.system("sudo nmcli dev disconnect wlan0")
@@ -96,6 +108,7 @@ class WIFI():
     def WIFI_comunicacio(self, envia_missatge = ''):
     
         try:
+            self.comunicant = True
             # Com a client: envia missatges a l'ESP32
             client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client_socket.connect((self.esp32_ip, self.esp32_port))
@@ -109,6 +122,7 @@ class WIFI():
             # Rep el missatge
             data = conn.recv(1024).decode('utf-8')
             conn.close()
+            self.comunicant = False
             return(data)
         except socket.timeout:
             print("Timeout esperant connexió.")
