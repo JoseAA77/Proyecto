@@ -67,6 +67,12 @@ class WIFI:
             try:
                 self.moduls_carregats[modul] = __import__(modul)
                 sys.modules[modul] = modul
+                
+                
+                globals()[modul] = self.moduls_carregats[modul]
+                https://chatgpt.com/c/674cc705-a7d8-800e-8f5e-93984ad186d8
+                
+                
             except ImportError:
                 print(f"Error: No s'ha pogut importar el mòdul {modul}")
 
