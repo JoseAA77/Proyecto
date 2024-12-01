@@ -1,7 +1,7 @@
 import socket
 import time
 import os
-from classe_WIFI_bidireccional_Pi_ESP32_20241201_2 import *
+from classe_WIFI_bidireccional_Pi_ESP32_20241201_3 import *
 
 
 wifi = WIFI()
