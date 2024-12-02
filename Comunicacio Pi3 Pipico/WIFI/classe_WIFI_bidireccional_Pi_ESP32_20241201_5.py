@@ -56,15 +56,17 @@ class WIFI:
             print("IP:", ap.ifconfig()[0])  # Mostra la IP del punt d'accés
             
             # Configura el servidor TCP de l'ESP32
+            self.esp32_ip = esp32_ip
+            self.esp32_port = esp32_port
             server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            server_socket.bind(('192.168.4.1', 12345))  # IP del punt d'accés i port
+            server_socket.bind((self.esp32_ip, esp32_port))  # IP del punt d'accés i port
             server_socket.listen(1)
             
-            print("Servidor TCP actiu a 192.168.4.1:12345")
+            print("Servidor TCP actiu a {self.esp32_ip}:{self.esp32_port}")
             
             # IP de la Raspberry Pi dins de la xarxa ESP32_AP
-            raspberry_ip = '192.168.4.2'
-            raspberry_port = 12346  # Port del servidor TCP de la Raspberry Pi
+            self.raspberry_ip = '192.168.4.2'
+            self.raspberry_port = raspberry_port  # Port del servidor TCP de la Raspberry Pi
 
 
     def _detectar_placa(self):

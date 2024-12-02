@@ -56,15 +56,17 @@ class WIFI:
             print("IP:", ap.ifconfig()[0])  # Mostra la IP del punt d'accés
             
             # Configura el servidor TCP de l'ESP32
+            self.esp32_ip = esp32_ip
+            self.esp32_port = esp32_port
             server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            server_socket.bind(('192.168.4.1', 12345))  # IP del punt d'accés i port
+            server_socket.bind((self.esp32_ip, esp32_port))  # IP del punt d'accés i port
             server_socket.listen(1)
             
-            print("Servidor TCP actiu a 192.168.4.1:12345")
+            print("Servidor TCP actiu a {self.esp32_ip}:{self.esp32_port}")
             
             # IP de la Raspberry Pi dins de la xarxa ESP32_AP
-            raspberry_ip = '192.168.4.2'
-            raspberry_port = 12346  # Port del servidor TCP de la Raspberry Pi
+            self.raspberry_ip = '192.168.4.2'
+            self.raspberry_port = raspberry_port  # Port del servidor TCP de la Raspberry Pi
 
 
     def _detectar_placa(self):
@@ -202,6 +204,43 @@ class WIFI:
                 print("Timeout esperant connexió.")
             except Exception as e:
                 print(f"Error: {e}")
+        
+        elif self.placa == "ESP32":
+            socket = self.moduls_carregats["socket"]
+            time = self.moduls_carregats["time"]
+            while True:
+                try:
+                    # Estableix un temps d'espera manual per la connexió
+                    start_time = time.time()
+                    conn = None
+                    while (time.time() - start_time) < 10:  # Temps màxim d'espera: 10 segons
+                        try:
+                            conn, addr = server_socket.accept()
+                            break
+                        except OSError as e:
+                            pass  # Cap connexió encara
+                        
+                    if conn is None:
+                        print("Timeout esperant connexió.")
+                        continue
+                
+                    # Rep el missatge
+                    data = conn.recv(1024).decode('utf-8')
+               
+                    conn.close()
+                
+                    # Com a client: envia missatges a la Raspberry Pi
+                    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    client_socket.connect((raspberry_ip, raspberry_port))
+                                    
+                    client_socket.send(envia_missatge.encode('utf-8'))
+                                
+                    client_socket.close()
+                
+                    return (data)
+                    
+                except Exception as e:
+                    print(f"Error: {e}")
 
         
     def WIFI_comprovacio(self):

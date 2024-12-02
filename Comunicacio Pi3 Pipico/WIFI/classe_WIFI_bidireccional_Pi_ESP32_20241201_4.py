@@ -13,6 +13,7 @@ class WIFI:
         self._detectar_placa()
         self._importar_moduls()
 
+        socket = self.moduls_carregats["socket"]
         #######
 
         # Sortides comprovació estat WIFI
@@ -25,7 +26,7 @@ class WIFI:
             
             self.actiu = True
             
-            socket = self.moduls_carregats["socket"]
+            #socket = self.moduls_carregats["socket"]
             #os = self.moduls_carregats["os"]
             #time = self.moduls_carregats["time"]
             
