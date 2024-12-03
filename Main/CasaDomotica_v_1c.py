@@ -11,19 +11,23 @@
 #estat_casa = { llum : {menjador : 5}, llum : {cuina : 0}, gas : {mq135 : 0}, {alarma : {alarma : {"armada","desactivada"}}}
 #keys_estat_casa = { llum : "llum", gas : "gas", alarma : "alarma"}
 #estat_casa = { llum_menjador : 5, llum_cuina : 0, gas_cuina : 0, alarma_general : {"armada","desactivada"}}
-objecte_casa = { llum_menjador : pcaLM, llum_cuina : pcaLC, gas_cuina : mq1351, alarma_general : alarmaG}
-estat_casa = { llum_menjador : "5T" '''(aixó seria valor 5% i True, és a dir encés. Si fos F, seria apagat (False))''', llum_cuina : 0, gas_cuina : 0, alarma_general : {"armada","desactivada"}}
 
-estat_casa = { "llum_menjador" : {"estat" : 5, "objecte" : llum_M}, "alarmaGeneral": {"estat": "activada", "armada" : True, "objecte": "alarmaGeneral"},
+#objecte_casa = { llum_menjador : pcaLM, llum_cuina : pcaLC, gas_cuina : mq1351, alarma_general : alarmaG}
+#estat_casa = { llum_menjador : "5T" '''(aixó seria valor 5% i True, és a dir encés. Si fos F, seria apagat (False))''', llum_cuina : 0, gas_cuina : 0, alarma_general : {"armada","desactivada"}}
+
+#estat_casa = { "llum_menjador" : {"estat" : 5, "objecte" : llum_M}, "alarmaGeneral": {"estat": "activada", "armada" : True, "objecte": "alarmaGeneral"},
 
 #En una primera versió, enviarem només el diccionari dinàmic, la part del diccionari estatic la posarem en un diccionari intern de cada placa.
 
 import re
 
+'''
 rebut = "'{ llum_menjador : '5T' , llum_cuina : '100F', gas_cuina : 0, alarma_general : 'ArmDes'}}"
                                                                                 ArmadaDesactivada 
                                                                                 DesDes/DesAct/ArmAct
                                                             DesarmadaDesactivada/DesarmadaActivada/ArmadaActivada
+'''
+                                                            
 # diccionaris estàtics
 objectes_casa = {
                 "Llum_Cuina" : Llum_Cuina_PCA,
@@ -34,18 +38,22 @@ objectes_casa = {
                 "Llum_Habitació_2" : Llum_Habitació_2,
                 "Llum_Habitació_3" : Llum_Habitació_3,
                 
-                "Pols_Llum_Cuina" : Pols_Llum_Cuina_PCA,
-                "Pols_Llum_Passadis" : Pols_Llum_Passadis_PCA,
-                "Pols_Llum_Menjador" : Pols_Llum_Menjador_PCA,
-                "Pols_Llum_Lavabo" : Pols_Llum_Lavabo_PCA,
-                "Pols_Llum_Habitacio_1" : Pols_Llum_Habitacio_1,
-                "Pols_Llum_Habitacio_2" : Pols_Llum_Habitacio_2,
-                "Pols_Llum_Habitacio_3" : Pols_Llum_Habitacio_3,
-                "Pols_Servo_Obrir" : Pols_Servo_Obrir,
-                "Pols_Servo_Tancar" : Pols_Servo_Tancar,
-                "Pols_Timbre" : Pols_Timbre, 
-                "Pols_Alarma_Perimetral" : Pols_Alarma_Perimetral,
-                "Pols_Alarma_Total" : Pols_Alarma_Total,
+                "Led_WIFI_activat" : LED_WIFI_act
+                "Led_WIFI_conectat" : LED_WIFI_con
+                "Led_WIFI_comunicant" : LED_WIFI_com
+                
+                "Pols_Llum_Cuina" : Pols_Llum_Cuina_PCA, # Botó teclat 1
+                "Pols_Llum_Passadis" : Pols_Llum_Passadis_PCA, # Botó teclat 5
+                "Pols_Llum_Menjador" : Pols_Llum_Menjador_PCA, # Botó teclat 4
+                "Pols_Llum_Lavabo" : Pols_Llum_Lavabo_PCA, # Botó teclat 2
+                "Pols_Llum_Habitacio_1" : Pols_Llum_Habitacio_1, # Botó teclat 3
+                "Pols_Llum_Habitacio_2" : Pols_Llum_Habitacio_2, # Botó teclat 6
+                "Pols_Llum_Habitacio_3" : Pols_Llum_Habitacio_3, # Botó teclat 7
+                "Pols_Servo_Obrir" : Pols_Servo_Obrir, # Botó teclat C
+                "Pols_Servo_Tancar" : Pols_Servo_Tancar, # Botó teclat D
+                "Pols_Timbre" : Pols_Timbre, # Botó teclat 0
+                "Pols_Alarma_Perimetral" : Pols_Alarma_Perimetral, # Botó teclat A
+                "Pols_Alarma_Total" : Pols_Alarma_Total, # Botó teclat B
                 
                 "Proximitat_Passadis" : Proximitat_Passadis,
                 "Proximitat_Menjador" : Proximitat_Menjador,
@@ -76,6 +84,10 @@ estat_objectes_casa = {
                 "Llum_Habitació_1" : "100F",
                 "Llum_Habitació_2" : "100F",
                 "Llum_Habitació_3" : "100F",
+                
+                "Led_WIFI_activat" : False,
+                "Led_WIFI_conectat" : False, 
+                "Led_WIFI_comunicant" : False, # Blinking
                 
                 "Pols_Llum_Cuina" : False, #Poden ser True or False (polsat/no polsat)
                 "Pols_Llum_Passadis" : False,
@@ -109,6 +121,33 @@ estat_objectes_casa = {
                 "Alarma_Intrusió_Perimetral" : {False, False} #Pot ser True or False tant l'armat (armat/desarmat) com detecció (detectat/no detectat)
                 "Alarma_Intrusió_Total" : {False, False} #Pot ser True or False tant l'armat (armat/desarmat) com detecció (detectat/no detectat)
                 }
+
+
+def to_diccionari(text):
+    # Regex per capturar la clau i el valor
+    pattern = r'"(\w+)"\s*:\s*({.*?}|\d+|"[^"]*")'
+    matches = re.findall(pattern, text)
+    
+    diccionari = {}
+    for key, value in matches:
+        # Comprovem si el valor és un conjunt (set)
+        if value.startswith("{"):  
+            # Eliminem les cometes i convertim els valors dins de les claus en tipus corresponents
+            value = value.strip("{}").split(",")
+            diccionari[key] = {val.strip() for val in value}
+        elif value.isdigit():  # Si el valor és un número
+            diccionari[key] = int(value)
+        else:  # Si el valor és una cadena
+            diccionari[key] = value.strip('"')
+    
+    return diccionari
+
+# Exemple d'entrada
+text = '{ "llum_menjador" : "5T" , "llum_cuina" : 0, "gas_cuina" : 0, "alarma_general" : FF}'
+
+# Cridem la funció
+resultat = to_diccionari(text)
+print(resultat)
 
             
 import re

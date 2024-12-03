@@ -10,7 +10,6 @@ try:
         if tecla is not None:
             print("Tecla presionada: ", teclas[tecla[0]][tecla[1]])
             time.sleep(0.2)
-            print("Lletra: ", teclado.tecla())
 
 except KeyboardInterrupt:
     GPIO.cleanup()
