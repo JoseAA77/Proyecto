@@ -43,6 +43,9 @@ objectes_casa = {
                 "Pols_Llum_Habitacio_3" : Pols_Llum_Habitacio_3,
                 "Pols_Servo_Obrir" : Pols_Servo_Obrir,
                 "Pols_Servo_Tancar" : Pols_Servo_Tancar,
+                "Pols_Timbre" : Pols_Timbre, 
+                "Pols_Alarma_Perimetral" : Pols_Alarma_Perimetral,
+                "Pols_Alarma_Total" : Pols_Alarma_Total,
                 
                 "Proximitat_Passadis" : Proximitat_Passadis,
                 "Proximitat_Menjador" : Proximitat_Menjador,
@@ -54,10 +57,62 @@ objectes_casa = {
                 "Reed_Habitacio_2" : Reed_Habitacio_2,
                 "Reed_Habitacio_3" : Reed_Habitacio_3,
                 
-                "Gas_MQ135" : Gas_MQ135
+                #"Gas_MQ135" : Gas_MQ135, -> 1
+                
+                "Servo_PEntrada" : Servo_PEntrada,
+                
+                #"Alarma_Gas" : Alarma_Gas, -> 1
+                "Alarma_Gas" : Gas_MQ135,
+                "Alarma_Intrusió_Perimetral" : Alarma_Intrusió_Perimetral, # Ha de contenir els sensors reed
+                "Alarma_Intrusió_Total" : Alarma_Intrusió_Total # Ha de contenir els sensors de proximitat i els reed
+                
                 }
 
 # diccionaris dinàmics
+
+estat_objectes_casa = {
+                "Llum_Cuina" : "100F", #Pot ser del mínim 5% (5) per exemple fins al 100% (100), apagat (F) o encés (T) ->exemple 5T 100F
+                "Llum_Passadis" : "100F",
+                "Llum_Menjador" : "100F",
+                "Llum_Lavabo" : "100F",
+                "Llum_Habitació_1" : "100F",
+                "Llum_Habitació_2" : "100F",
+                "Llum_Habitació_3" : "100F",
+                
+                "Pols_Llum_Cuina" : False, #Poden ser True or False (polsat/no polsat)
+                "Pols_Llum_Passadis" : False,
+                "Pols_Llum_Menjador" : False,
+                "Pols_Llum_Lavabo" : False,
+                "Pols_Llum_Habitacio_1" : False,
+                "Pols_Llum_Habitacio_2" : False,
+                "Pols_Llum_Habitacio_3" : False,
+                "Pols_Servo_Obrir" : False,
+                "Pols_Servo_Tancar" : False,
+                "Pols_Timbre" : False, 
+                "Pols_Alarma_Perimetral" : False,
+                "Pols_Alarma_Total" : False,
+                
+                "Proximitat_Passadis" : False, #Poden ser True or False (detectat/no detectat)
+                "Proximitat_Menjador" : False,
+                "Proximitat_Habitacio_2" : False,
+                "Proximitat_Habitacio_3" : False,
+                
+                "Reed_PEntrada" : False, #Poden ser True or False (tancat/obert)
+                "Reed_Menjador" : False,
+                "Reed_Habitacio_2" : False,
+                "Reed_Habitacio_3" : False,
+                
+                #"Gas_MQ135" : Gas_MQ135, -> 1
+                
+                "Servo_PEntrada" : 0, #0-90 graus obertura
+                
+                #"Alarma_Gas" : Alarma_Gas, -> 1
+                "Alarma_Gas" : False, #Pot ser True or False (detectat/no detectat)
+                "Alarma_Intrusió_Perimetral" : {False, False} #Pot ser True or False tant l'armat (armat/desarmat) com detecció (detectat/no detectat)
+                "Alarma_Intrusió_Total" : {False, False} #Pot ser True or False tant l'armat (armat/desarmat) com detecció (detectat/no detectat)
+                
+                }
+
             
 import re
 
