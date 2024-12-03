@@ -36,8 +36,8 @@ class PCA9685:
         self.i2c.writeto_mem(self.address, 0x06 + 4 * index,  data)
 
     def change_duty(self, index, value=None):
-            duty_value = int(value * 40.96)
-            self.duty(index, duty_value)
+        duty_value = int(value * 40.95)
+        self.duty(index, duty_value)
 
 
     def duty(self, index, value=None, invert=False):
