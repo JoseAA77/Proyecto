@@ -57,30 +57,7 @@ class Teclat4x4:
 
     def tecla(self):
         """Escanea todo el teclado y devuelve la tecla presionada una sola vez."""
-        tecla = None
-        if self.platform == "pi_3":
-            for fila in range(len(self.pins_filas)):
-                self.GPIO.output(self.pins_filas[fila], self.GPIO.HIGH)
-                for columna in range(len(self.pins_columnas)):
-                    if self.GPIO.input(self.pins_columnas[columna]) == self.GPIO.HIGH:
-                        if not self.teclas_pulsadas[fila][columna]:
-                            tecla = [fila, columna]
-                            self.teclas_pulsadas[fila][columna] = True
-                    else:
-                        self.teclas_pulsadas[fila][columna] = False
-                self.GPIO.output(self.pins_filas[fila], self.GPIO.LOW)
-        
-        elif self.platform == "pi_pico":
-            for fila in range(len(self.filas)):
-                self.filas[fila].high()
-                for columna in range(len(self.columnas)):
-                    if self.columnas[columna].value() == 1:
-                        if not self.teclas_pulsadas[fila][columna]:
-                            tecla = [fila, columna]
-                            self.teclas_pulsadas[fila][columna] = True
-                    else:
-                        self.teclas_pulsadas[fila][columna] = False
-                self.filas[fila].low()
+        tecla = self.scan()
 
         return teclas[self.tecla[0]][self.tecla[1]]
 
