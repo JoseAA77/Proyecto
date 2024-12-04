@@ -59,7 +59,7 @@ class Teclat4x4:
         """Escanea todo el teclado y devuelve la tecla presionada una sola vez."""
         tecla = self.scan()
 
-        return teclas[self.tecla[0]][self.tecla[1]]
+        return self.teclas[tecla[0]][tecla[1]]
 
 
     def cleanup(self):
