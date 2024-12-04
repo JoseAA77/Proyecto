@@ -16,6 +16,8 @@ class Pulsador:
         self.state = state
         self.temps_anterior = time.time()
         self.actiu = False
+        self.accion_corta_realizada = False 
+        self.pulsacion_larga_iniciada = False
 
     def detecta_pulsacio(self):
         """Retorna True si detecta pulsacio, False en cas contrari."""
@@ -58,6 +60,30 @@ class Pulsador:
         else:
             self.temps_anterior = current_time
         return False
+
+    def gestionar_pulsacions(self, temps=1):
+        """Gestiona pulsación corta y larga."""
+        if self.detecta_pulsacio():
+            tiempo_presionado = time.time() - self.temps_anterior
+            if tiempo_presionado < temps:
+                # Pulsación corta
+                if not self.accion_corta_realizada:
+                    self.accion_corta_realizada = True
+                    self.pulsacion_larga_iniciada = False
+                    return [self.accion_corta_realizada, self.pulsacion_larga_iniciada]
+            elif tiempo_presionado >= temps:
+                # Pulsación larga
+                if not self.pulsacion_larga_iniciada:
+                    self.accion_corta_realizada = False
+                    self.pulsacion_larga_iniciada = True
+                    #return "Acción para pulsación larga iniciada"
+                else:
+                    return [self.accion_corta_realizada, self.pulsacion_larga_iniciada]
+        else:
+            self.accion_corta_realizada = False
+            self.pulsacion_larga_iniciada = False
+            self.temps_anterior = time.time()
+        return [False, False]
 
     def cleanup(self):
         """Limpia la configuración de GPIO."""
