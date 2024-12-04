@@ -1,33 +1,34 @@
 # El programa es comunicarà entre plaques mitjançanmt un diccionari on s'enviarà la part del diccionari que s'hagi modificat entre les 
 #plaques. Cada x segons o minuts, s'enviarà el diccionari complert per a comprovar que estigui tot actualitzat (poder una versió següent)
-# El programa compararà el diccionari anterior, mitjançant un sort i la creació d'una llista, amb l'actual i compararà si hi ha algun 
+# El programa compararà el diccionari anterior, mitjançant un sort i la creació d'una llista, amb l'actual i compararà si ho ha algun 
 #canvi. Si són iguals ignorarà les llibreries i no farà res. Si no és igual, realitzarà l'acció que hagi de fer per a actualitzar
 #l'estat dels components.
-# També o en substitució, l'alterrnativa seria que agafés una variable buida en la que si hi ha un canvi en algún sensor o en alguna 
-#acció cap a un actuador, aquesta variable estarà plena amb el canvi a realitzar i actuarà en consequencia el sistema, per exemple amb una
+# També o en substitució, l'alterrnativa seria que agafés una variable buida en la que si ho ha un canvi en algún sensor o en alguna 
+#acció cap a un actuador, aquesta variable estarà plena amb el canvi a realitzar i actuarà en consequwencia el sistema, per exemple amb una
 #referència del q s'està modificant.
+
+#estat_casa = { llum_menjador : {llums,5}, llum_cuina : {llums,0}, sensor_gas : {gas,0}, estat_alarma : {alarma,{"armada","desactivada"}}}
+#estat_casa = { llum : {menjador : 5}, llum : {cuina : 0}, gas : {mq135 : 0}, {alarma : {alarma : {"armada","desactivada"}}}
+#keys_estat_casa = { llum : "llum", gas : "gas", alarma : "alarma"}
+#estat_casa = { llum_menjador : 5, llum_cuina : 0, gas_cuina : 0, alarma_general : {"armada","desactivada"}}
+
+#objecte_casa = { llum_menjador : pcaLM, llum_cuina : pcaLC, gas_cuina : mq1351, alarma_general : alarmaG}
+#estat_casa = { llum_menjador : "5T" '''(aixó seria valor 5% i True, és a dir encés. Si fos F, seria apagat (False))''', llum_cuina : 0, gas_cuina : 0, alarma_general : {"armada","desactivada"}}
+
+#estat_casa = { "llum_menjador" : {"estat" : 5, "objecte" : llum_M}, "alarmaGeneral": {"estat": "activada", "armada" : True, "objecte": "alarmaGeneral"},
 
 #En una primera versió, enviarem només el diccionari dinàmic, la part del diccionari estatic la posarem en un diccionari intern de cada placa.
 
 import re
 from classe_WIFI_RaspPI3.py import *
-from classe_teclat4x4.py import *
-
-''' Teoricament ja ho fa la classe del teclat 4x4
-from machine import Pin
-fila_pins = [Pin(p, Pin.OUT) for p in PINs_fila]
-columna_pins = [Pin(p, Pin.IN, Pin.PULL_DOWN) for p in PINs_columna]
-'''
-
-# Pins
-PINs_fila = [ , , , ]
-PINs_columna = [ , , , ]
+import ujson  # per a MicroPython
+#import json # per a Python
 
 missatge_enviar = '{}'
 
 # Creacio objectes
 COMs = WIFI()
-Teclat = Teclat4x4(PINs_fila, PINs_columna, "pi_3")
+
 
 while True:
     
@@ -35,6 +36,7 @@ while True:
         # Realitza comunicacio
         missatge_rebut = COMs.WIFI_Comunicacio(missatge_enviar)
         missatge_enviar = '{}' #en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
+        
 
         # Actualitza diccionari si es rebut algun canvi
         if missatge_rebut != '':
@@ -43,8 +45,31 @@ while True:
             
             for key in claus_novetat:
                 estat_objectes_casa[key] = diccionari_rebut[key]
+                
+                ########
+                es que ejecute los cambios
+
         
-        # Crea el missatge a enviar, si no hi ha canvis, envia text buit
+#########        
+        # Diccionari anterior
+        diccionari_estats_anterior = sorted(estat_objectes_casa.items()) # Ordena segons les claus    
+
+
+#########        
+        capta els valors dels sensors #fer les coses seguint els sensors
+
+
+        
+#########        
+        if diccionari ara != a abans, entra i canvia coses
+        el diccionari s'haur``a actualitzat despres de pasar per codi
+
+        
+fer una funció per objecte o si pot ser per grup d'objectes
+        
+        # Canvi en el diccionari
+        
+ '''       # Crea el missatge a enviar, si no hi ha canvis, envia text buit
         clau = Teclat.tecla()
         if clau != None:
             if "Llum" in clau:
@@ -67,12 +92,22 @@ while True:
             else:
                 estat_objectes_casa[clau] = not estat_objectes_casa[clau]
                 missatge_enviar = missatge_enviar[:-1]+clau+f': {estat_objectes_casa[clau]}'+f'{missatge_enviar[len(missatge_enviar)-1]}'
-    except Exception as e:
-        print("Error:", e)
+    except KeyboardInterrupt:
         print("Aturada manual per l'usuari")
+ '''
  
+def to_diccionari(text): # Per a MicroPython
+    try:
+        # Converteix el text JSON en un diccionari Python
+        return ujson.loads(text)
+    except ValueError as e:
+        # Captura errors en cas de text no vàlid
+        print(f"Error en convertir el text a diccionari: {e}")
+        return ''
+        
 
-def to_diccionari(text):
+''' 
+def to_diccionari(text): # Per a Python
     # Regex per capturar la clau i el valor
     pattern = r'"(\w+)"\s*:\s*({.*?}|\d+|"[^"]*")'
     matches = re.findall(pattern, text)
@@ -90,14 +125,8 @@ def to_diccionari(text):
             diccionari[key] = value.strip('"')
     
     return diccionari
-           
+'''           
 
-# configuracio sortida tecles del teclat
-#equivalencia a -> [["1", "2", "3", "A"], ["4", "5", "6", "B"], ["7", "8", "9", "C"], ["*", "0", "#", "D"]]
-Tecles = [["Pols_Llum_Cuina", "Pols_Llum_Lavabo", "Pols_Llum_Habitacio_1", "Pols_Alarma_Perimetral"], # -> [["1", "2", "3", "A"],
-          ["Pols_Llum_Menjador", "Pols_Llum_Passadis", "Pols_Llum_Habitacio_2", "Pols_Alarma_Total"], # -> ["4", "5", "6", "B"],
-          ["Pols_Llum_Habitacio_3", "8", "9", "Pols_Servo_Obrir"], # -> ["7", "8", "9", "C"],
-          ["*", "Pols_Timbre", "#", "Pols_Servo_Tancar"]] # -> ["*", "0", "#", "D"]]
 
 # diccionaris estàtics
 objectes_casa = {
@@ -183,11 +212,8 @@ estat_objectes_casa = {
                 "Reed_Habitacio_2" : False,
                 "Reed_Habitacio_3" : False,
                 
-                #"Gas_MQ135" : Gas_MQ135, -> 1
-                
                 "Servo_PEntrada" : False, # False està tancada 0, #0-90 graus obertura
                 
-                #"Alarma_Gas" : Alarma_Gas, -> 1
                 "Alarma_Gas" : False, #Pot ser True or False (detectat/no detectat)
                 "Alarma_Intrusio_Perimetral" : "FF", # Armat/activat {False, False} #Pot ser True or False tant l'armat (armat/desarmat) com detecció (detectat/no detectat)
                 "Alarma_Intrusio_Total" : "FF" # Armat/activat {False, False} #Pot ser True or False tant l'armat (armat/desarmat) com detecció (detectat/no detectat)
