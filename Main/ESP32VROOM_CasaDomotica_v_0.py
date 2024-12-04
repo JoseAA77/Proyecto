@@ -21,18 +21,14 @@
 
 import re
 from classe_WIFI_RaspPI3.py import *
-from classe_teclat4x4.py import *
-
-
-# Pins
-PINs_fila = [ , , , ]
-PINs_columna = [ , , , ]
+import ujson  # per a MicroPython
+#import json # per a Python
 
 missatge_enviar = '{}'
 
 # Creacio objectes
 COMs = WIFI()
-Teclat = Teclat4x4(PINs_fila, PINs_columna, "pi_3")
+
 
 while True:
     
@@ -75,8 +71,17 @@ while True:
     except KeyboardInterrupt:
         print("Aturada manual per l'usuari")
  
+def to_diccionari(text): # Per a MicroPython
+    try:
+        # Converteix el text JSON en un diccionari Python
+        return ujson.loads(text)
+    except ValueError as e:
+        # Captura errors en cas de text no vàlid
+        print(f"Error en convertir el text a diccionari: {e}")
+        return {}
 
-def to_diccionari(text):
+''' 
+def to_diccionari(text): # Per a Python
     # Regex per capturar la clau i el valor
     pattern = r'"(\w+)"\s*:\s*({.*?}|\d+|"[^"]*")'
     matches = re.findall(pattern, text)
@@ -94,7 +99,7 @@ def to_diccionari(text):
             diccionari[key] = value.strip('"')
     
     return diccionari
-           
+'''           
 
 # configuracio sortida tecles del teclat
 #equivalencia a -> [["1", "2", "3", "A"], ["4", "5", "6", "B"], ["7", "8", "9", "C"], ["*", "0", "#", "D"]]
