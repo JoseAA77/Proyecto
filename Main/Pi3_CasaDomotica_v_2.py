@@ -21,16 +21,88 @@
 
 import re
 from classe_WIFI_RaspPI3.py import *
+from classe_teclat4x4.py import *
 
 
+# Pins
+PINs_fila = [ , , , ]
+PINs_columna = [ , , , ]
 
-'''
-rebut = "'{ llum_menjador : '5T' , llum_cuina : '100F', gas_cuina : 0, alarma_general : 'ArmDes'}}"
-                                                                                ArmadaDesactivada 
-                                                                                DesDes/DesAct/ArmAct
-                                                            DesarmadaDesactivada/DesarmadaActivada/ArmadaActivada
-'''
-                                                            
+missatge_enviar = '{}'
+
+# Creacio objectes
+COMs = WIFI()
+Teclat = Teclat4x4(PINs_fila, PINs_columna, "pi_3")
+
+while True:
+    
+    try:
+        # Realitza comunicacio
+        missatge_rebut = COMs.WIFI_Comunicacio(missatge_enviar)
+        missatge_enviar = '{}' #en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
+
+        # Actualitza diccionari si es rebut algun canvi
+        if missatge_rebut != '':
+            diccionari_rebut = to_diccionari(missatge_rebut)
+            claus_novetat = diccionari_rebut.keys()
+            
+            for key in claus_novetat:
+                estat_objectes_casa[key] = diccionari_rebut[key]
+        
+        # Crea el missatge a enviar, si no hi ha canvis, envia text buit
+        clau = Teclat.tecla()
+        if clau != None:
+            if "Llum" in clau:
+                fi = ''
+                if estat_objectes_casa[clau][-1] == "F":
+                    fi = "T"
+                else:
+                    fi = "F"
+                estat_objectes_casa[clau] = estat_objectes_casa[clau][:-1]+fi
+                missatge_enviar = missatge_enviar[:-1]+clau+f': {estat_objectes_casa[clau]}'+f'{missatge_enviar[len(missatge_enviar)-1]}'#estat_objectes_casa[clau]})' #en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
+            elif "Intrusio" in clau: # Aquí només armarà o desarmarà l'alarma
+                ini = ''
+                if estat_objectes_casa[clau][-1] == "F":
+                    ini = "T"
+                else:
+                    ini = "F"
+                estat_objectes_casa[clau] = ini+estat_objectes_casa[clau][-1]
+                missatge_enviar = missatge_enviar[:-1]+clau+f': {estat_objectes_casa[clau]}'+f'{missatge_enviar[len(missatge_enviar)-1]}'
+                        #estat_objectes_casa[clau]})'#en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
+            else:
+                estat_objectes_casa[clau] = not estat_objectes_casa[clau]
+                missatge_enviar = missatge_enviar[:-1]+clau+f': {estat_objectes_casa[clau]}'+f'{missatge_enviar[len(missatge_enviar)-1]}'
+    except KeyboardInterrupt:
+        print("Aturada manual per l'usuari")
+ 
+
+def to_diccionari(text):
+    # Regex per capturar la clau i el valor
+    pattern = r'"(\w+)"\s*:\s*({.*?}|\d+|"[^"]*")'
+    matches = re.findall(pattern, text)
+    
+    diccionari = {}
+    for key, value in matches:
+        # Comprovem si el valor és un conjunt (set)
+        if value.startswith("{"):  
+            # Eliminem les cometes i convertim els valors dins de les claus en tipus corresponents
+            value = value.strip("{}").split(",")
+            diccionari[key] = {val.strip() for val in value}
+        elif value.isdigit():  # Si el valor és un número
+            diccionari[key] = int(value)
+        else:  # Si el valor és una cadena
+            diccionari[key] = value.strip('"')
+    
+    return diccionari
+           
+
+# configuracio sortida tecles del teclat
+#equivalencia a -> [["1", "2", "3", "A"], ["4", "5", "6", "B"], ["7", "8", "9", "C"], ["*", "0", "#", "D"]]
+Tecles = [["Pols_Llum_Cuina", "Pols_Llum_Lavabo", "Pols_Llum_Habitacio_1", "Pols_Alarma_Perimetral"], # -> [["1", "2", "3", "A"],
+          ["Pols_Llum_Menjador", "Pols_Llum_Passadis", "Pols_Llum_Habitacio_2", "Pols_Alarma_Total"], # -> ["4", "5", "6", "B"],
+          ["Pols_Llum_Habitacio_3", "8", "9", "Pols_Servo_Obrir"], # -> ["7", "8", "9", "C"],
+          ["*", "Pols_Timbre", "#", "Pols_Servo_Tancar"]] # -> ["*", "0", "#", "D"]]
+
 # diccionaris estàtics
 objectes_casa = {
                 "Llum_Cuina" : Llum_Cuina_PCA,
@@ -124,115 +196,3 @@ estat_objectes_casa = {
                 "Alarma_Intrusio_Perimetral" : "FF", # Armat/activat {False, False} #Pot ser True or False tant l'armat (armat/desarmat) com detecció (detectat/no detectat)
                 "Alarma_Intrusio_Total" : "FF" # Armat/activat {False, False} #Pot ser True or False tant l'armat (armat/desarmat) com detecció (detectat/no detectat)
                 }
-
-
-def to_diccionari(text):
-    # Regex per capturar la clau i el valor
-    pattern = r'"(\w+)"\s*:\s*({.*?}|\d+|"[^"]*")'
-    matches = re.findall(pattern, text)
-    
-    diccionari = {}
-    for key, value in matches:
-        # Comprovem si el valor és un conjunt (set)
-        if value.startswith("{"):  
-            # Eliminem les cometes i convertim els valors dins de les claus en tipus corresponents
-            value = value.strip("{}").split(",")
-            diccionari[key] = {val.strip() for val in value}
-        elif value.isdigit():  # Si el valor és un número
-            diccionari[key] = int(value)
-        else:  # Si el valor és una cadena
-            diccionari[key] = value.strip('"')
-    
-    return diccionari
-
-# Pins
-PINs_fila = [ , , , ]
-PINs_columna = [ , , , ]
-Tecles = [["Pols_Llum_Cuina", "Pols_Llum_Lavabo", "Pols_Llum_Habitacio_1", "Pols_Alarma_Perimetral"],
-          ["Pols_Llum_Menjador", "Pols_Llum_Passadis", "Pols_Llum_Habitacio_2", "Pols_Alarma_Total"],
-          ["Pols_Llum_Habitacio_3", "8", "9", "Pols_Servo_Obrir"], 
-          ["*", "Pols_Timbre", "#", "Pols_Servo_Tancar"]]
-missatge_enviar = '{}'
-
-# Creacio objectes
-COMs = WIFI()
-Teclat = Teclat4x4(PINs_fila, PINs_columna, "pi_3")
-
-while True:
-    
-    # Realitza comunicacio
-    missatge_rebut = COMs.WIFI_Comunicacio(missatge_enviar)
-    missatge_enviar = '{}' #en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
-
-    # Actualitza diccionari si es rebut algun canvi
-    if missatge_rebut != '':
-        diccionari_rebut = to_diccionari(missatge_rebut)
-        claus_novetat = diccionari_rebut.keys()
-        
-        for key in claus_novetat:
-            estat_objectes_casa[key] = diccionari_rebut[key]
-    
-    # Crea el missatge a enviar, si no hi ha canvis, envia text buit
-    clau = Teclat.tecla()
-    if clau != None:
-        if "Llum" in clau:
-            fi = ''
-            if estat_objectes_casa[clau][-1] == "F":
-                fi = "T"
-            else:
-                fi = "F"
-            estat_objectes_casa[clau] = estat_objectes_casa[clau][:-1]+fi
-            missatge_enviar = missatge_enviar[:-1]+clau+f': {estat_objectes_casa[clau]}'+f'{missatge_enviar[len(missatge_enviar)-1]}'#estat_objectes_casa[clau]})' #en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
-        elif "Intrusio" in clau: # Aquí només armarà o desarmarà l'alarma
-            ini = ''
-            if estat_objectes_casa[clau][-1] == "F":
-                ini = "T"
-            else:
-                ini = "F"
-            estat_objectes_casa[clau] = ini+estat_objectes_casa[clau][-1]
-            missatge_enviar = missatge_enviar[:-1]+clau+f': {estat_objectes_casa[clau]}'+f'{missatge_enviar[len(missatge_enviar)-1]}'
-                    #estat_objectes_casa[clau]})'#en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
-        else:
-            estat_objectes_casa[clau] = not estat_objectes_casa[clau]
-            missatge_enviar = missatge_enviar[:-1]+clau+f': {estat_objectes_casa[clau]}'+f'{missatge_enviar[len(missatge_enviar)-1]}'
-            
-
-
-
-'''
-#######
-estat_complet = {
-    "llum": {"estat": "ON", "objecte": "menjador"},
-    "gas": {"estat": "OFF", "objecte": "cuina"},
-    "alarma": {"estat": "activada", "objecte": "dormitori"},
-}
-
-# Accés fàcil a tots els atributs
-for clau, dades in estat_complet.items():
-    print(f"{clau.capitalize()} està {dades['estat']} a {dades['objecte']}")
--> Llum està ON a menjador
-Gas està OFF a cuina
-Alarma està activada a dormitori
-
-##
-# Canviar l'estat de la llum
-estat_complet["llum"]["estat"] = "OFF"
-
-# Afegir un nou atribut
-estat_complet["llum"]["intensitat"] = 75
-
-# Resultat
-print(estat_complet["llum"])
--> {'estat': 'OFF', 'objecte': 'menjador', 'intensitat': 75}
-
-
-######
-estat_casa[llum_menjador] = 3
-
-if lum_menjador:
-    pca.encen("menjador",3)   
-    
-envia = {llum_cuina : 6}
-
-estat_casa[llum_cuina] = 6
-'''
