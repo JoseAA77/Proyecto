@@ -7,17 +7,9 @@
 #acció cap a un actuador, aquesta variable estarà plena amb el canvi a realitzar i actuarà en consequwencia el sistema, per exemple amb una
 #referència del q s'està modificant.
 
-#estat_casa = { llum_menjador : {llums,5}, llum_cuina : {llums,0}, sensor_gas : {gas,0}, estat_alarma : {alarma,{"armada","desactivada"}}}
-#estat_casa = { llum : {menjador : 5}, llum : {cuina : 0}, gas : {mq135 : 0}, {alarma : {alarma : {"armada","desactivada"}}}
-#keys_estat_casa = { llum : "llum", gas : "gas", alarma : "alarma"}
-#estat_casa = { llum_menjador : 5, llum_cuina : 0, gas_cuina : 0, alarma_general : {"armada","desactivada"}}
-
-#objecte_casa = { llum_menjador : pcaLM, llum_cuina : pcaLC, gas_cuina : mq1351, alarma_general : alarmaG}
-#estat_casa = { llum_menjador : "5T" '''(aixó seria valor 5% i True, és a dir encés. Si fos F, seria apagat (False))''', llum_cuina : 0, gas_cuina : 0, alarma_general : {"armada","desactivada"}}
-
-#estat_casa = { "llum_menjador" : {"estat" : 5, "objecte" : llum_M}, "alarmaGeneral": {"estat": "activada", "armada" : True, "objecte": "alarmaGeneral"},
-
+############################       BACKLOG      #################################
 #En una primera versió, enviarem només el diccionari dinàmic, la part del diccionari estatic la posarem en un diccionari intern de cada placa.
+#Ademés, hi hauran estats dels diccionaris que no s'enviaran a la raspberry i s'haurà de fer en una segona versió
 
 import machine
 import time
@@ -94,9 +86,9 @@ while True:
         llegeix el diccionari i actualitza l'estat dels actuadors (llums, buzzer, servo...) en funció del nou valor del diccionari que ha aportat el sensor corresponent
         #el diccionari s'haur``a actualitzat despres de pasar per codi
         
-        if estat_objectes_casa["Alarma_Intrusio_Total"][1] == "T": #l'armat Total te prioritat        
+        if estat_objectes_casa["Alarma_Intrusio_Total"][0] == "T": #l'armat Total te prioritat        
             alarma_2("Total")
-        elif estat_objectes_casa["Alarma_Intrusio_Perimetral"][1] == "T": #si no esta total comprova si esta perimetral
+        elif estat_objectes_casa["Alarma_Intrusio_Perimetral"][0] == "T": #si no esta total comprova si esta perimetral
             alarma_2("Perimetral")
         else:
             alarma_2("Total") #podria ser alarma_2("Perimetral"), tant ne fa pq estan desarmades les dues
