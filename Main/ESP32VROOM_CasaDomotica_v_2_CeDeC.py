@@ -46,6 +46,7 @@ while True:
             for key in claus_novetat:
                 estat_objectes_casa[key] = diccionari_rebut[key]
                 
+                if 
                 ########
                 es que ejecute los cambios
 

@@ -46,7 +46,7 @@ while True:
         
         # Crea el missatge a enviar, si no hi ha canvis, envia text buit
         clau = Teclat.tecla()
-        if clau != None:
+        if clau != None: # Són tots Polsadors
             if "Llum" in clau:
                 fi = ''
                 if estat_objectes_casa[clau][-1] == "F":
