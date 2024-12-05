@@ -46,17 +46,6 @@ while True:
             for key in claus_novetat:
                 estat_objectes_casa[key] = diccionari_rebut[key]
                 
-                if "Pols" in key:
-                    if "Llum" in key:
-                        pca.alterna(objectes_casa[key]): "falta l'objecte PCA
-                    elif "Servo" in key:
-                        pca.duty(objectes_casa[key]): "falta l'objecte PCA
-                    elif "Timbre" in key:
-                        pca.duty(objectes_casa[key]): "falta l'objecte PCA
-                    
-                       
-                
-                elif "
                 ########
                 es que ejecute los cambios
 
