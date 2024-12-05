@@ -56,7 +56,8 @@ i2c = I2C(0, scl=Pin(22), sda=Pin(21))
 pulsador = [Pulsador(13, False, "pi_pico"), Pulsador(26, False, "pi_pico"), Pulsador(27, False, "pi_pico"),
             Pulsador(12, False, "pi_pico"), Pulsador(14, False, "pi_pico"), Pulsador(25, False, "pi_pico"),
             Pulsador(33, False, "pi_pico")]
-
+pca = PCA9685(i2c)
+pca.freq(50)
 
 # Variables, declaració
 missatge_enviar = '{}'
@@ -77,7 +78,8 @@ while True:
             
             for key in claus_novetat:
                 estat_objectes_casa[key] = diccionari_rebut[key]
-                
+                if "Llum" in key:
+                    pca.alterna(key)
                 ########
                 fer que ejecute los cambios
 
@@ -107,6 +109,9 @@ while True:
             alarma_2("Perimetral")
         else:
             alarma_2("Total") #podria ser alarma_2("Perimetral"), tant ne fa pq estan desarmades les dues
+
+        detectar_pulsadors()
+
 ##        
 fer una funció per objecte o si pot ser per grup d'objectes que es cridara en l'apartat 'BBBB
   ##      
