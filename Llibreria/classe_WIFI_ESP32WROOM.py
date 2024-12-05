@@ -2,14 +2,14 @@ import network
 import socket
 import time
 
-class ESP32NetworkManager:
-    def __init__(self, ssid, password, server_ip, server_port, client_ip, client_port):
-        self.ssid = ssid
-        self.password = password
-        self.server_ip = server_ip
-        self.server_port = server_port
-        self.client_ip = client_ip
-        self.client_port = client_port
+class WIFI(): #ESP32NetworkManager:
+    def __init__(self, raspberry_ip = '0.0.0.0', raspberry_port = 12346, esp32_ip = '192.168.4.1', esp32_port = 12345):
+        self.ssid = 'ESP32_AP'
+        self.password = '12345678'
+        self.raspberry_ip = '0.0.0.0'
+        self.raspberry_port = 12346  # Port del servidor de la Raspberry Pi
+        self.esp32_ip = esp32_ip      # Ip del ESP32
+        self.esp32_port = esp32_port  # Port del servidor TCP de l'ESP32
         self.ap = None
         self.server_socket = None
 
