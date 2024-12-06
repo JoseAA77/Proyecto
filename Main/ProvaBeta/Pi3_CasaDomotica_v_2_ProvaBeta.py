@@ -10,8 +10,8 @@
 #En una primera versió, enviarem només el diccionari dinàmic, la part del diccionari estatic la posarem en un diccionari intern de cada placa.
 
 import re
-from classe_WIFI_RaspPI3.py import *
-from classe_teclat4x4.py import *
+from classe_WIFI_RaspPI3 import *
+from classe_teclat4x4 import *
 
 ''' Teoricament ja ho fa la classe del teclat 4x4
 from machine import Pin
@@ -20,8 +20,8 @@ columna_pins = [Pin(p, Pin.IN, Pin.PULL_DOWN) for p in PINs_columna]
 '''
 
 # Pins
-PINs_fila = [ , , , ]
-PINs_columna = [ , , , ]
+PINs_fila = [26,19,13,6]
+PINs_columna = [5,11,9,10]
 
 missatge_enviar = '{}'
 
@@ -109,9 +109,9 @@ objectes_casa = {
                 "Llum_Habitació_2" : Llum_Habitació_2,
                 "Llum_Habitació_3" : Llum_Habitació_3,
                 
-                "Led_WIFI_activat" : LED_WIFI_act
-                "Led_WIFI_conectat" : LED_WIFI_con
-                "Led_WIFI_comunicant" : LED_WIFI_com
+                "Led_WIFI_activat" : LED_WIFI_act,
+                "Led_WIFI_conectat" : LED_WIFI_con,
+                "Led_WIFI_comunicant" : LED_WIFI_com,
                 
                 "Pols_Llum_Cuina" : Pols_Llum_Cuina_PCA, # Botó teclat 1
                 "Pols_Llum_Passadis" : Pols_Llum_Passadis_PCA, # Botó teclat 5
