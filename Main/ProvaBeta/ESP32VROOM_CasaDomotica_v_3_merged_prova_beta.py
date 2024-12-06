@@ -35,7 +35,7 @@ import ujson  # per a MicroPython
 SENSOR_MAG_ventanas = 17 
     #faltaria passar-ho al chip multiplexor
 SENSOR_MAG_puerta = 27 
-SENSORES_IR_PINes = [22, 23, 24, 25]
+#####SENSORES_IR_PINes = [21, 22, 23, 24]
 BUZZER_PIN = 18
 SENSOR_MQ2_PIN = 4
 
@@ -49,7 +49,7 @@ sensor_gas = MQ2(SENSOR_MQ2_PIN, platform="pi_pico")
 sensor_mag_serie = machine.Pin(SENSOR_MAG_ventanas, machine.Pin.IN, machine.Pin.PULL_UP) 
     #faltarua passar-ho al chip multiplexor
 sensor_mag_indep = machine.Pin(SENSOR_MAG_puerta, machine.Pin.IN, machine.Pin.PULL_UP) 
-sensores_ir = [machine.Pin(pin, machine.Pin.IN, machine.Pin.PULL_UP) for pin in SENSORES_IR_PINes]
+#####sensores_ir = [machine.Pin(pin, machine.Pin.IN, machine.Pin.PULL_UP) for pin in SENSORES_IR_PINes]
 #Polsadors i llums
 #falta definir polsadors d'alarma, timbre...
 i2c = I2C(0, scl=Pin(22), sda=Pin(21))
