@@ -43,7 +43,23 @@ class Teclat4x4:
         else:
             return self.teclas[tecla[0]][tecla[1]]
 
-
+        
     def cleanup(self):
         """Limpia la configuración de GPIO."""
         self.GPIO.cleanup()
+
+
+PINs_fila = [10,9,11,5]
+PINs_columna = [6,13,19,26]
+Tecles = [["Pols_Llum_Cuina", "Pols_Llum_Lavabo", "Pols_Llum_Habitacio_1", "Pols_Alarma_Perimetral"], # -> [["1", "2", "3", "A"],
+          ["Pols_Llum_Menjador", "Pols_Llum_Passadis", "Pols_Llum_Habitacio_2", "Pols_Alarma_Total"], # -> ["4", "5", "6", "B"],
+          ["Pols_Llum_Habitacio_3", None, None, "Pols_Servo_Obrir"], # -> ["7", "8", "9", "C"],
+          [None, "Pols_Timbre", None, "Pols_Servo_Tancar"]] 
+
+T = Teclat4x4(PINs_fila, PINs_columna, Tecles)
+
+while True:
+    t = T.tecla()
+    if t is not None:
+        print(t)
+    time.sleep(0.5)

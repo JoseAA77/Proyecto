@@ -61,7 +61,7 @@ pca = PCA9685(i2c)
 pca.freq(50)
 
 # Variables, declaració
-missatge_enviar = '{}'
+missatge_enviar = ''
 primerarmat = True
 primerDESarmat = False
 
@@ -168,7 +168,7 @@ def to_diccionari(text): # Per a MicroPython
     except ValueError as e:
         # Captura errors en cas de text no vàlid
         print(f"Error en convertir el text a diccionari: {e}")
-        return ''
+        return '{}'
 
 
 #### Alarma
@@ -288,7 +288,8 @@ while True:
     try:
         # Realitza comunicacio
         missatge_rebut = COMs.WIFI_comunicacio('{}')
-        missatge_enviar = '{}' #en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
+        missatge_enviar = '{}' #els {} s'han de possar si hi ha algun canvi a enviar
+        #en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
         
         # Actualitza diccionari si es rebut algun canvi
         if missatge_rebut != '':

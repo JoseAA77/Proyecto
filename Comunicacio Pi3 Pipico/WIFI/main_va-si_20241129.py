@@ -63,7 +63,7 @@ while True:
 
         client_socket.close()
 
-        time.sleep(5)  # Espera 5 segons abans del següent cicle
+        time.sleep(1)  # Espera 5 segons abans del següent cicle
 
     except Exception as e:
         print(f"Error: {e}")
