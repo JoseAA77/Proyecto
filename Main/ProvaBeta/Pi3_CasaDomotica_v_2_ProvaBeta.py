@@ -11,7 +11,8 @@
 
 import re
 from classe_WIFI_RaspPI3 import *
-from classe_teclat4x4 import *
+#from classe_teclat4x4 import *
+from classe_teclat4x4_pi3 import *
 
 ''' Teoricament ja ho fa la classe del teclat 4x4
 from machine import Pin
@@ -29,11 +30,34 @@ missatge_enviar = '{}'
 COMs = WIFI()
 Teclat = Teclat4x4(PINs_fila, PINs_columna, "pi_3")
 
+
+
+def to_diccionari(text):
+    # Regex per capturar la clau i el valor
+    pattern = r'"(\w+)"\s*:\s*({.*?}|\d+|"[^"]*")'
+    matches = re.findall(pattern, text)
+    
+    diccionari = {}
+    for key, value in matches:
+        # Comprovem si el valor és un conjunt (set)
+        if value.startswith("{"):  
+            # Eliminem les cometes i convertim els valors dins de les claus en tipus corresponents
+            value = value.strip("{}").split(",")
+            diccionari[key] = {val.strip() for val in value}
+        elif value.isdigit():  # Si el valor és un número
+            diccionari[key] = int(value)
+        else:  # Si el valor és una cadena
+            diccionari[key] = value.strip('"')
+    
+    return diccionari
+           
+
+
 while True:
     
     try:
         # Realitza comunicacio
-        missatge_rebut = COMs.WIFI_Comunicacio(missatge_enviar)
+        missatge_rebut = COMs.WIFI_comunicacio(missatge_enviar)
         missatge_enviar = '{}' #en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
 
         # Actualitza diccionari si es rebut algun canvi
@@ -67,30 +91,12 @@ while True:
             else:
                 estat_objectes_casa[clau] = not estat_objectes_casa[clau]
                 missatge_enviar = missatge_enviar[:-1]+clau+f': {estat_objectes_casa[clau]}'+f'{missatge_enviar[len(missatge_enviar)-1]}'
+    except KeyboardInterrupt:
+        print("Aturada manual per l'usuari")
     except Exception as e:
         print("Error:", e)
-        print("Aturada manual per l'usuari")
- 
 
-def to_diccionari(text):
-    # Regex per capturar la clau i el valor
-    pattern = r'"(\w+)"\s*:\s*({.*?}|\d+|"[^"]*")'
-    matches = re.findall(pattern, text)
-    
-    diccionari = {}
-    for key, value in matches:
-        # Comprovem si el valor és un conjunt (set)
-        if value.startswith("{"):  
-            # Eliminem les cometes i convertim els valors dins de les claus en tipus corresponents
-            value = value.strip("{}").split(",")
-            diccionari[key] = {val.strip() for val in value}
-        elif value.isdigit():  # Si el valor és un número
-            diccionari[key] = int(value)
-        else:  # Si el valor és una cadena
-            diccionari[key] = value.strip('"')
-    
-    return diccionari
-           
+ 
 
 # configuracio sortida tecles del teclat
 #equivalencia a -> [["1", "2", "3", "A"], ["4", "5", "6", "B"], ["7", "8", "9", "C"], ["*", "0", "#", "D"]]

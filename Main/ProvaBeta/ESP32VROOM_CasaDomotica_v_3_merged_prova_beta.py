@@ -43,7 +43,7 @@ SENSOR_MQ2_PIN = 4
 # Creacio objectes
 COMs = WIFI()
 #Alarma
-buzzer = Buzzer_Passiu(BUZZER_PIN)
+buzzer = Buzzer_Passiu(BUZZER_PIN, 250)
 sensor_gas = MQ2(SENSOR_MQ2_PIN, platform="pi_pico")
     #faltarua passar-ho al chip multiplexor
 sensor_mag_serie = machine.Pin(SENSOR_MAG_ventanas, machine.Pin.IN, machine.Pin.PULL_UP) 
