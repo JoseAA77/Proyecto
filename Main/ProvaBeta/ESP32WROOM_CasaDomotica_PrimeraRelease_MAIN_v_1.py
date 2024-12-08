@@ -238,7 +238,6 @@ estat_objectes_casa = {
 estat_objectes_casa["Alarma_Intrusió_Perimetral"] = alarma_2("Perimetral") # Ha de contenir els sensors reed
 estat_objectes_casa["Alarma_Intrusió_Total"] = alarma_2("Total") # Ha de contenir els sensors de proximitat i els reed
 
-
 try:
     while True:
         # Realitza comunicacio
@@ -246,9 +245,12 @@ try:
         missatge_enviar = '{}' #els {} s'han de possar si hi ha algun canvi a enviar
         #en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
         
-         # Actualitza diccionari si es rebut algun canvi
+        print(missatge_rebut)
+        
+        # Actualitza diccionari si es rebut algun canvi
         if missatge_rebut != '{}':
-            diccionari_rebut = to_diccionari(missatge_rebut)
+#            diccionari_rebut = to_diccionari(missatge_rebut)
+            diccionari_rebut = srt(to_diccionari(missatge_rebut))
             print(diccionari_rebut)
             claus_novetat = diccionari_rebut.keys()
             print(claus_novetat)
