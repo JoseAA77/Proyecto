@@ -4,11 +4,12 @@ Arxiu anterior:
       main_WIFI_BetaPasaPas_20241208.py -> ni puta idea, crec q es el mateix
     1bis- canvi de nom de main_CasaDomotica_PrimeraRelease_v_0.py a main_ESP32WROOM_CasaDomotica_PrimeraRelease_v_1.py
     2- main_ESP32WROOM_CasaDomotica_PrimeraRelease_v_1.py -> res funciona, es refa de nou la classe (classe_WIFI_ESP32WROOM.py) i es procedeix a seguir en aquesta versió
-    3- 
+    3- ESP32WROOM_CasaDomotica_PrimeraRelease_MAIN_v_0.py -> versió funcional de creació objectes, assignació de valors, etc amb MAIN de prova
+    
 '''
 '''
 Accions en aquest ongoing:
-    seguint feina de l'arxiu 2- amb la nova classe -> classe_WIFI_ESP32WROOM.py
+    seguint feina de l'arxiu 3- on es segueix amb el merge del "main" de ESP32VROOM_CasaDomotica_v_3_merged_prova_beta.py 
 '''
 from machine import *
 import ujson  # per a MicroPython
@@ -48,9 +49,9 @@ ReedPortaEnt = machine.Pin(PIN_Reed_portaEnt, machine.Pin.IN, machine.Pin.PULL_U
 # Polsadors i llums
     #falta definir polsadors d'alarma, timbre...
 i2c = I2C(0, scl=Pin(22), sda=Pin(21))
-pulsador = [Pulsador(13, False, "pi_pico"), Pulsador(26, False, "pi_pico"), Pulsador(27, False, "pi_pico"),
-            Pulsador(12, False, "pi_pico"), Pulsador(14, False, "pi_pico"), Pulsador(25, False, "pi_pico"),
-            Pulsador(33, False, "pi_pico")]
+polsador = [Pulsador(13, False), Pulsador(26, False), Pulsador(27, False),
+            Pulsador(12, False), Pulsador(14, False), Pulsador(25, False),
+            Pulsador(33, False)]
 pca = PCA9685(i2c)
 pca.freq(50)
                 
@@ -152,13 +153,13 @@ objectes_casa = {
               ##@  "Led_WIFI_conectat" : LED_WIFI_con,
                 ##@"Led_WIFI_comunicant" : LED_WIFI_com,
                 
-                "Pols_Llum_Cuina" : pulsador[0], # Botó teclat 1
-                "Pols_Llum_Passadis" : pulsador[1], # Botó teclat 5
-                "Pols_Llum_Menjador" : pulsador[2], # Botó teclat 4
-                "Pols_Llum_Lavabo" : pulsador[3], # Botó teclat 2
-                "Pols_Llum_Habitacio_1" : pulsador[4], # Botó teclat 3
-                "Pols_Llum_Habitacio_2" : pulsador[5], # Botó teclat 6
-                "Pols_Llum_Habitacio_3" : pulsador[6], # Botó teclat 7
+                "Pols_Llum_Cuina" : polsador[0], # Botó teclat 1
+                "Pols_Llum_Passadis" : polsador[1], # Botó teclat 5
+                "Pols_Llum_Menjador" : polsador[2], # Botó teclat 4
+                "Pols_Llum_Lavabo" : polsador[3], # Botó teclat 2
+                "Pols_Llum_Habitacio_1" : polsador[4], # Botó teclat 3
+                "Pols_Llum_Habitacio_2" : polsador[5], # Botó teclat 6
+                "Pols_Llum_Habitacio_3" : polsador[6], # Botó teclat 7
             ##@    "Pols_Servo_Obrir" : Pols_Servo_Obrir, # Botó teclat C
             ##@    "Pols_Servo_Tancar" : Pols_Servo_Tancar, # Botó teclat D
            ##@     "Pols_Timbre" : Pols_Timbre, # Botó teclat 0
@@ -240,10 +241,52 @@ estat_objectes_casa["Alarma_Intrusió_Total"] = alarma_2("Total") # Ha de conten
 
 try:
     while True:
-        missatge_enviar = str(time.time())
-        print(missatge_enviar)
-        print(COMs.WIFI_comunicacio(missatge_enviar))
+        # Realitza comunicacio
+        missatge_rebut = COMs.WIFI_comunicacio(missatge_enviar)
+        missatge_enviar = '{}' #els {} s'han de possar si hi ha algun canvi a enviar
+        #en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
+        
+         # Actualitza diccionari si es rebut algun canvi
+        if missatge_rebut != '{}':
+            diccionari_rebut = to_diccionari(missatge_rebut)
+            claus_novetat = diccionari_rebut.keys()
 
+            for key in claus_novetat:
+                estat_objectes_casa[key] = diccionari_rebut[key]
+                if "Llum" in key:
+                    pca.alterna(key)
+##################################    fer que ejecute los cambios
+
+#########        
+        # Diccionari anterior
+#       diccionari_estats_anterior = sorted(estat_objectes_casa.items()) # Ordena segons les claus    
+#       creació de la variable del diccionari a enviar en mode text
+#########
+#        apartat 'BBBB
+#        capta els valors dels sensors #fer les coses seguint els sensors
+#        el diccionari s'actualitza a cada sensor pel que passa
+#        així mateix la variable string del diccionari a enviar a la raspberry també s'actualitza
+#        # Verificación de estado de la alarma
+        
+        
+#########        
+#        if diccionari ara != a abans, entra i canvia coses. Si és el mateix significa que no ha passat res i nno cal q faci res
+#        llegeix el diccionari i actualitza l'estat dels actuadors (llums, buzzer, servo...) en funció del nou valor del diccionari que ha aportat el sensor corresponent
+#        #el diccionari s'haur``a actualitzat despres de pasar per codi
+        
+                
+        if estat_objectes_casa["Alarma_Intrusio_Total"][0] == "T": #l'armat Total te prioritat        
+            alarma_2("Total")
+        elif estat_objectes_casa["Alarma_Intrusio_Perimetral"][0] == "T": #si no esta total comprova si esta perimetral
+            alarma_2("Perimetral")
+        else:
+            alarma_2("Total") #podria ser alarma_2("Perimetral"), tant ne fa pq estan desarmades les dues
+
+        #detectar_polsadors()
+        
+        
+        missatge_enviar = str(time.time())
+        print(missatge_rebut)
         time.sleep(0.01)
 
 except Exception as e:

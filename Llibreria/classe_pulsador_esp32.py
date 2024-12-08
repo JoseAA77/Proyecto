@@ -2,7 +2,7 @@ from machine import Pin
 import time
 
 class Pulsador:
-    def __init__(self, pin, state, platform):
+    def __init__(self, pin, state, platform = ''):
         """Constructor del Objeto"""
         self.pin = pin
         self.platform = platform
