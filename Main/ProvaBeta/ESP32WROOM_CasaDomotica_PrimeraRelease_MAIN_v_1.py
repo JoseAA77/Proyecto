@@ -281,8 +281,9 @@ try:
             alarma_2("Perimetral")
         else:
             alarma_2("Total") #podria ser alarma_2("Perimetral"), tant ne fa pq estan desarmades les dues
-
-        #detectar_polsadors()
+        
+        print("detectar_polsadors()")
+        detectar_polsadors()
         
         
         missatge_enviar = str(time.time())
