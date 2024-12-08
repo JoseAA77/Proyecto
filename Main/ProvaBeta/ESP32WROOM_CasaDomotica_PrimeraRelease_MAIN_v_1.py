@@ -145,9 +145,12 @@ objectes_casa = {
                 "Llum_Passadis" : 2,
                 "Llum_Menjador" : 3,
                 "Llum_Lavabo" : 5,
-                "Llum_Habitació_1" : 1,
-                "Llum_Habitació_2" : 6,
-                "Llum_Habitació_3" : 7,
+                "Llum_Habitacio_1" : 1,
+                "Llum_Habitacio_2" : 6,
+                "Llum_Habitacio_3" : 13,#7,
+                '''"Llum_Servo_R" : ,
+                "Llum_Habitació_3" : 7,'''
+                
                 
               ##@  "Led_WIFI_activat" : LED_WIFI_act,
               ##@  "Led_WIFI_conectat" : LED_WIFI_con,
@@ -244,21 +247,31 @@ try:
         missatge_rebut = COMs.WIFI_comunicacio(missatge_enviar)
         missatge_enviar = '{}' #els {} s'han de possar si hi ha algun canvi a enviar
         #en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
-        
-        print(missatge_rebut)
+        '''for i in range(16):
+            print(i)
+            time.sleep(1)
+            pca.alterna(i)
+        '''
+        #print(missatge_rebut)
         
         # Actualitza diccionari si es rebut algun canvi
         if missatge_rebut != '{}':
-#            diccionari_rebut = to_diccionari(missatge_rebut)
-            diccionari_rebut = srt(to_diccionari(missatge_rebut))
-            print(diccionari_rebut)
+            diccionari_rebut = to_diccionari(missatge_rebut)
+
+            print("rebut", diccionari_rebut) #########################
+
             claus_novetat = diccionari_rebut.keys()
-            print(claus_novetat)
+
+            print("clau", claus_novetat)########################
 
             for key in claus_novetat:
                 estat_objectes_casa[key] = diccionari_rebut[key]
+                print("estat",estat_objectes_casa[key])
+                print("accedint diccionari",objectes_casa[key])
+                print("MARC! el index de la llibreria pca9685 es el canal?")
                 if "Llum" in key:
-                    pca.alterna(key)
+                    print("objecte",objectes_casa[key])
+                    pca.alterna(objectes_casa[key])
 ##################################    fer que ejecute los cambios
 
 #########        
@@ -278,14 +291,15 @@ try:
 #        llegeix el diccionari i actualitza l'estat dels actuadors (llums, buzzer, servo...) en funció del nou valor del diccionari que ha aportat el sensor corresponent
 #        #el diccionari s'haur``a actualitzat despres de pasar per codi
         
-                
+        #codi ignorat fins que funcionin les llums
+        '''        
         if estat_objectes_casa["Alarma_Intrusio_Total"][0] == "T": #l'armat Total te prioritat        
             alarma_2("Total")
         elif estat_objectes_casa["Alarma_Intrusio_Perimetral"][0] == "T": #si no esta total comprova si esta perimetral
             alarma_2("Perimetral")
         else:
             alarma_2("Total") #podria ser alarma_2("Perimetral"), tant ne fa pq estan desarmades les dues
-        
+        '''
         #print("detectar_polsadors()")
         #detectar_polsadors()
         
@@ -297,7 +311,6 @@ try:
 except KeyboardInterrupt:
     print("Apagando sistema...")
 except Exception as e:
-    print(f"Falles?")
     print(f"Error: {e}")
 
 

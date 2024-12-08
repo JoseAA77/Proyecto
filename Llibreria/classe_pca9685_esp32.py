@@ -6,7 +6,7 @@ class PCA9685:
         self.i2c = i2c
         self.address = address
         self.state = False
-        self.valor = [100,100,100,100,100,100,100,100]  # Valor inicial
+        self.valor = [100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100]  # Valor inicial
         self.bajando = True  # Empezamos bajando
         self.reset()
 
