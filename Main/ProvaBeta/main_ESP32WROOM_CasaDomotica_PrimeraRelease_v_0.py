@@ -1,3 +1,4 @@
+#Arxiu anterior: main_BetaPasaPas_20241208.py
 import network
 import socket
 import time
