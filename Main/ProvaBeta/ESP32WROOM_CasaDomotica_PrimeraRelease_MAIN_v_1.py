@@ -249,7 +249,9 @@ try:
          # Actualitza diccionari si es rebut algun canvi
         if missatge_rebut != '{}':
             diccionari_rebut = to_diccionari(missatge_rebut)
+            print(diccionari_rebut)
             claus_novetat = diccionari_rebut.keys()
+            print(claus_novetat)
 
             for key in claus_novetat:
                 estat_objectes_casa[key] = diccionari_rebut[key]
@@ -282,15 +284,18 @@ try:
         else:
             alarma_2("Total") #podria ser alarma_2("Perimetral"), tant ne fa pq estan desarmades les dues
         
-        print("detectar_polsadors()")
-        detectar_polsadors()
+        #print("detectar_polsadors()")
+        #detectar_polsadors()
         
         
         missatge_enviar = str(time.time())
         print(missatge_rebut)
         time.sleep(0.01)
 
+except KeyboardInterrupt:
+    print("Apagando sistema...")
 except Exception as e:
+    print(f"Falles?")
     print(f"Error: {e}")
 
 
