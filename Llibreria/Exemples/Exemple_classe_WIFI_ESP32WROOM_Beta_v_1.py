@@ -2,11 +2,11 @@
 Arxiu anterior: 
     1-main_WIFI_BetaPasaPas_20241208.py -> wifi funcions funcional
     2-classe_WIFI_ESP32WROOM_Beta_v_0.py -> funcional com un exemple
-    3-classe_WIFI_ESP32WROOM_Beta_v_1.py -> Ja a classe
+    3- 
 '''
 '''
 Accions en aquest ongoing:
-    -
+    passant a classe
 '''
 
 
@@ -132,3 +132,13 @@ class WIFI:
 
             except Exception as e:
                 print(f"Error: {e}")
+
+COMs = WIFI()
+try:
+    while True:
+        mis = str(time.time())
+        print(COMs.WIFI_comunicacio("holacaracola"))
+        #COMs.WIFI_comprovacio()
+        time.sleep(1)
+except KeyboardInterrupt:
+    print("fukingdown")

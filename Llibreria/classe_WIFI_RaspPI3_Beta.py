@@ -47,10 +47,7 @@ class WIFI:
             conn.close()
 
             self.comunicant = False
-            if data == None:
-                return ("{}")
-            else:
-                return(data)
+            return(data)
                 
         except socket.timeout:
             print("Timeout esperant connexió.")

@@ -2,7 +2,7 @@
 Arxiu anterior: 
     1-main_WIFI_BetaPasaPas_20241208.py -> wifi funcions funcional
     2-classe_WIFI_ESP32WROOM_Beta_v_0.py -> funcional com un exemple
-    3-classe_WIFI_ESP32WROOM_Beta_v_1.py -> Ja a classe
+    3- 
 '''
 '''
 Accions en aquest ongoing:

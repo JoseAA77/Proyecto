@@ -1,7 +1,50 @@
 '''
 Arxiu anterior: 
     1-main_BetaPasaPas_20241208.py -> wifi funcions funcional
-    main_WIFI_BetaPasaPas_20241208.py -> el mateix?
+      main_WIFI_BetaPasaPas_20241208.py -> ni puta idea, crec q es el mateix
+    1bis- canvi de nom de main_CasaDomotica_PrimeraRelease_v_0.py a main_ESP32WROOM_CasaDomotica_PrimeraRelease_v_1.py
+    2- 
+    3- 
+'''
+'''
+Accions en aquest ongoing:
+    passant a classe
+'''
+from classe_WIFI_ESP32WROOM_Beta import *
+
+
+                ###### Assignació PINs ######
+
+
+                ###### Assignació variables ######
+missatge_enviar = '{}'       
+                
+                ###### Creació de funcions ######
+                
+                ###### Creació objectes ######
+COMs = WIFI()                
+                
+                ###### MAIN ######    
+
+
+try:
+    while True:
+        print(missatge_enviar)
+        print(COMs.WIFI_comunicacio(missatge_enviar))
+
+        time.sleep(1)
+
+except Exception as e:
+    print(f"Error: {e}")
+
+
+
+
+
+
+'''
+Arxiu anterior: 
+    1-main_BetaPasaPas_20241208.py -> wifi funcions funcional
     2-
     3- 
 '''
@@ -9,7 +52,7 @@ Arxiu anterior:
 Accions en aquest ongoing:
     passant a classe
 '''
-
+'''
 
 import network
 import socket
@@ -80,3 +123,4 @@ while True:
 
     except Exception as e:
         print(f"Error: {e}")
+'''
