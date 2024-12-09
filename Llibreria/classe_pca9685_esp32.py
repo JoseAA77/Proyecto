@@ -5,7 +5,7 @@ class PCA9685:
     def __init__(self, i2c, address=0x40):
         self.i2c = i2c
         self.address = address
-        self.state = False
+        self.state = [False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False]
         self.valor = [100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100]  # Valor inicial
         self.bajando = True  # Empezamos bajando
         self.reset()
@@ -64,16 +64,16 @@ class PCA9685:
         self.valor[index] = value
         duty_value = int(self.valor[index] * 40.95)
         self.duty(index, duty_value, invert)
-        self.state = True
+        self.state[index] = True
         
     def alterna(self, index):
-        if self.state:
+        if self.state[index]:
             self.duty(index, 0)
-            self.state = False
+            self.state[index] = False
         else:
             duty_value = int(self.valor[index] * 40.95)
             self.duty(index, duty_value)
-            self.state = True
+            self.state[index] = True
 
     def bajar_subir(self, index):
         """Función integrada para manejar el descenso y ascenso del valor y cambiar el ciclo de trabajo."""

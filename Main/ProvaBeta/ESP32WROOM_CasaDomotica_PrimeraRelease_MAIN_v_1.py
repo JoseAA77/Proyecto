@@ -143,11 +143,11 @@ def detectar_polsadors():
 objectes_casa = {
                 "Llum_Cuina" : 4,
                 "Llum_Passadis" : 2,
-                "Llum_Menjador" : 3,
+                "Llum_Menjador" : 13,
                 "Llum_Lavabo" : 5,
-                "Llum_Habitacio_1" : 1,
+                "Llum_Habitacio_1" : 15,
                 "Llum_Habitacio_2" : 6,
-                "Llum_Habitacio_3" : 13,#7,
+                "Llum_Habitacio_3" : 9,
                 '''"Llum_Servo_R" : ,
                 "Llum_Habitació_3" : 7,'''
                 
@@ -244,14 +244,15 @@ estat_objectes_casa["Alarma_Intrusió_Total"] = alarma_2("Total") # Ha de conten
 try:
     while True:
         # Realitza comunicacio
-        missatge_rebut = COMs.WIFI_comunicacio(missatge_enviar)
+        #missatge_rebut = COMs.WIFI_comunicacio(missatge_enviar)
+        missatge_rebut = '{}'
         missatge_enviar = '{}' #els {} s'han de possar si hi ha algun canvi a enviar
         #en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
-        '''for i in range(16):
+        for i in range(16):
             print(i)
-            time.sleep(1)
+            time.sleep(0.1)
             pca.alterna(i)
-        '''
+        
         #print(missatge_rebut)
         
         # Actualitza diccionari si es rebut algun canvi
