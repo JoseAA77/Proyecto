@@ -5,11 +5,13 @@ Arxiu anterior:
     1bis- canvi de nom de main_CasaDomotica_PrimeraRelease_v_0.py a main_ESP32WROOM_CasaDomotica_PrimeraRelease_v_1.py
     2- main_ESP32WROOM_CasaDomotica_PrimeraRelease_v_1.py -> res funciona, es refa de nou la classe (classe_WIFI_ESP32WROOM.py) i es procedeix a seguir en aquesta versió
     3- ESP32WROOM_CasaDomotica_PrimeraRelease_MAIN_v_0.py -> versió funcional de creació objectes, assignació de valors, etc amb MAIN de prova
-    
+    4- ESP32WROOM_CasaDomotica_PrimeraRelease_MAIN_v_1.py -> versió funcional amb canals mal posats 
+    5- ESP32WROOM_CasaDomotica_PrimeraRelease_MAIN_v_2.py -> funciona, eliminat prints
 '''
 '''
 Accions en aquest ongoing:
-    seguint feina de l'arxiu 3- on es segueix amb el merge del "main" de ESP32VROOM_CasaDomotica_v_3_merged_prova_beta.py 
+    ss'elimina el codi comentat del final
+    es modifiquen els canals de la pca per a dirigir correctament
 '''
 from machine import *
 import ujson  # per a MicroPython
@@ -50,7 +52,7 @@ ReedPortaEnt = machine.Pin(PIN_Reed_portaEnt, machine.Pin.IN, machine.Pin.PULL_U
     #falta definir polsadors d'alarma, timbre...
 i2c = I2C(0, scl=Pin(22), sda=Pin(21))
 polsador = [Pulsador(13, False), Pulsador(26, False), Pulsador(27, False),
-            Pulsador(12, False), Pulsador(14, False), Pulsador(25, False),
+            Pulsador(12, False), Pulsador(14, False), Pulsador(35, False),
             Pulsador(33, False)]
 pca = PCA9685(i2c)
 pca.freq(50)
@@ -141,20 +143,20 @@ def detectar_polsadors():
                 ###### Assignació Diccionaris ######
 # diccionaris estàtics
 objectes_casa = {
-                "Llum_Cuina" : 4,
-                "Llum_Passadis" : 2,
-                "Llum_Menjador" : 3,
-                "Llum_Lavabo" : 5,
-                "Llum_Habitacio_1" : 1,
-                "Llum_Habitacio_2" : 6,
-                "Llum_Habitacio_3" : 13,#7,
-                '''"Llum_Servo_R" : ,
+                "Llum_Cuina" : 11,
+                "Llum_Passadis" : 13,
+                "Llum_Menjador" : 12,
+                "Llum_Lavabo" : 10,
+                "Llum_Habitacio_1" : 14,
+                "Llum_Habitacio_2" : 9,
+                "Llum_Habitacio_3" : 8,
+                '''"Llum_Servo_R"RGB : , 5,6 i 7
                 "Llum_Habitació_3" : 7,'''
                 
-                
-              ##@  "Led_WIFI_activat" : LED_WIFI_act,
-              ##@  "Led_WIFI_conectat" : LED_WIFI_con,
-                ##@"Led_WIFI_comunicant" : LED_WIFI_com,
+                #RGB
+              ##@  "Led_WIFI_activat" : LED_WIFI_act, 2
+              ##@  "Led_WIFI_conectat" : LED_WIFI_con, 3
+                ##@"Led_WIFI_comunicant" : LED_WIFI_com, 4
                 
                 "Pols_Llum_Cuina" : polsador[0], # Botó teclat 1
                 "Pols_Llum_Passadis" : polsador[1], # Botó teclat 5
@@ -163,8 +165,8 @@ objectes_casa = {
                 "Pols_Llum_Habitacio_1" : polsador[4], # Botó teclat 3
                 "Pols_Llum_Habitacio_2" : polsador[5], # Botó teclat 6
                 "Pols_Llum_Habitacio_3" : polsador[6], # Botó teclat 7
-            ##@    "Pols_Servo_Obrir" : Pols_Servo_Obrir, # Botó teclat C
-            ##@    "Pols_Servo_Tancar" : Pols_Servo_Tancar, # Botó teclat D
+            ##@    "Pols_Servo_Obrir" : Pols_Servo_Obrir, # Botó teclat C 8
+            ##@    "Pols_Servo_Tancar" : Pols_Servo_Tancar, # Botó teclat D 8
            ##@     "Pols_Timbre" : Pols_Timbre, # Botó teclat 0
            ##@     "Pols_Alarma_Perimetral" : Pols_Alarma_Perimetral, # Botó teclat A
            ##@     "Pols_Alarma_Total" : Pols_Alarma_Total, # Botó teclat B
@@ -245,11 +247,14 @@ try:
     while True:
         # Realitza comunicacio
         missatge_rebut = COMs.WIFI_comunicacio(missatge_enviar)
+        #if missatge_rebut != '{}':
+            #print(missatge_rebut)
         missatge_enviar = '{}' #els {} s'han de possar si hi ha algun canvi a enviar
         #en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
-        '''for i in range(16):
+        '''
+        for i in range(16):
             print(i)
-            time.sleep(1)
+            time.sleep(3)
             pca.alterna(i)
         '''
         #print(missatge_rebut)
@@ -258,19 +263,19 @@ try:
         if missatge_rebut != '{}':
             diccionari_rebut = to_diccionari(missatge_rebut)
 
-            print("rebut", diccionari_rebut) #########################
+            #print("rebut", diccionari_rebut) #########################
 
             claus_novetat = diccionari_rebut.keys()
 
-            print("clau", claus_novetat)########################
+            #print("clau", claus_novetat)########################
 
             for key in claus_novetat:
                 estat_objectes_casa[key] = diccionari_rebut[key]
-                print("estat",estat_objectes_casa[key])
-                print("accedint diccionari",objectes_casa[key])
-                print("MARC! el index de la llibreria pca9685 es el canal?")
+                #print("estat",estat_objectes_casa[key])
+                #print("accedint diccionari",objectes_casa[key])
+                #print("MARC! el index de la llibreria pca9685 es el canal?")
                 if "Llum" in key:
-                    print("objecte",objectes_casa[key])
+                    #print("objecte",objectes_casa[key])
                     pca.alterna(objectes_casa[key])
 ##################################    fer que ejecute los cambios
 
@@ -301,11 +306,12 @@ try:
             alarma_2("Total") #podria ser alarma_2("Perimetral"), tant ne fa pq estan desarmades les dues
         '''
         #print("detectar_polsadors()")
+        #print("detectar_polsadors()")
         #detectar_polsadors()
         
         
-        missatge_enviar = str(time.time())
-        print(missatge_rebut)
+        #missatge_enviar = str(time.time())
+        #print(missatge_rebut)
         time.sleep(0.01)
 
 except KeyboardInterrupt:
@@ -317,86 +323,3 @@ except Exception as e:
 
 
 
-
-'''
-Arxiu anterior: 
-    1-main_BetaPasaPas_20241208.py -> wifi funcions funcional
-    2-
-    3- 
-'''
-'''
-Accions en aquest ongoing:
-    passant a classe
-'''
-'''
-
-import network
-import socket
-import time
-
-# Configura l'ESP32 com a punt d'accés
-ssid = 'ESP32_AP'
-password = '12345678'
-
-ap = network.WLAN(network.AP_IF)
-ap.active(True)
-ap.config(essid=ssid, password=password, authmode=network.AUTH_WPA_WPA2_PSK)
-
-print("Punt d'accés actiu")
-print("SSID:", ssid)
-print("IP:", ap.ifconfig()[0])  # Mostra la IP del punt d'accés
-
-# Configura el servidor TCP de l'ESP32
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.bind(('192.168.4.1', 12345))  # IP del punt d'accés i port
-server_socket.listen(1)
-
-print("Servidor TCP actiu a 192.168.4.1:12345")
-
-# IP de la Raspberry Pi dins de la xarxa ESP32_AP
-raspberry_ip = '192.168.4.2'
-raspberry_port = 12346  # Port del servidor TCP de la Raspberry Pi
-
-while True:
-    try:
-        # Com a servidor: escolta i rep missatges de la Raspberry Pi
-        print("Esperant connexió de la Raspberry Pi...")
-
-        # Estableix un temps d'espera manual per la connexió
-        start_time = time.time()
-        conn = None
-        while (time.time() - start_time) < 10:  # Temps màxim d'espera: 10 segons
-            try:
-                conn, addr = server_socket.accept()
-                break
-            except OSError as e:
-                pass  # Cap connexió encara
-
-        if conn is None:
-            print("Timeout esperant connexió.")
-            continue
-
-        print(f"Connexió establerta amb: {addr}")
-
-        # Rep el missatge
-        data = conn.recv(1024).decode('utf-8')
-        print(f"Missatge rebut de la Raspberry Pi: {data}")
-
-        conn.close()
-
-        # Com a client: envia missatges a la Raspberry Pi
-        print("Connectant com a client al servidor de la Raspberry Pi...")
-        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect((raspberry_ip, raspberry_port))
-
-        message = "Hola Raspberry"
-        client_socket.send(message.encode('utf-8'))
-        print(f"Missatge enviat a la Raspberry Pi: {message}")
-
-        client_socket.close()
-
-        time.sleep(1)  # Espera 5 segons abans del següent cicle
-
-    except Exception as e:
-        print(f"Error: {e}")
-'''

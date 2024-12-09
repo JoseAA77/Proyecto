@@ -141,20 +141,20 @@ def detectar_polsadors():
                 ###### Assignació Diccionaris ######
 # diccionaris estàtics
 objectes_casa = {
-                "Llum_Cuina" : 4,
-                "Llum_Passadis" : 2,
-                "Llum_Menjador" : 3,
-                "Llum_Lavabo" : 5,
-                "Llum_Habitacio_1" : 1,
-                "Llum_Habitacio_2" : 6,
-                "Llum_Habitacio_3" : 13,#7,
-                '''"Llum_Servo_R" : ,
+                "Llum_Cuina" : 12,
+                "Llum_Passadis" : 14,
+                "Llum_Menjador" : 13,
+                "Llum_Lavabo" : 11,
+                "Llum_Habitacio_1" : 15,
+                "Llum_Habitacio_2" : 10,
+                "Llum_Habitacio_3" : 9,
+                '''"Llum_Servo_R"RGB : , 5,6 i 7
                 "Llum_Habitació_3" : 7,'''
                 
-                
-              ##@  "Led_WIFI_activat" : LED_WIFI_act,
-              ##@  "Led_WIFI_conectat" : LED_WIFI_con,
-                ##@"Led_WIFI_comunicant" : LED_WIFI_com,
+                #RGB
+              ##@  "Led_WIFI_activat" : LED_WIFI_act, 2
+              ##@  "Led_WIFI_conectat" : LED_WIFI_con, 3
+                ##@"Led_WIFI_comunicant" : LED_WIFI_com, 4
                 
                 "Pols_Llum_Cuina" : polsador[0], # Botó teclat 1
                 "Pols_Llum_Passadis" : polsador[1], # Botó teclat 5
@@ -163,8 +163,8 @@ objectes_casa = {
                 "Pols_Llum_Habitacio_1" : polsador[4], # Botó teclat 3
                 "Pols_Llum_Habitacio_2" : polsador[5], # Botó teclat 6
                 "Pols_Llum_Habitacio_3" : polsador[6], # Botó teclat 7
-            ##@    "Pols_Servo_Obrir" : Pols_Servo_Obrir, # Botó teclat C
-            ##@    "Pols_Servo_Tancar" : Pols_Servo_Tancar, # Botó teclat D
+            ##@    "Pols_Servo_Obrir" : Pols_Servo_Obrir, # Botó teclat C 8
+            ##@    "Pols_Servo_Tancar" : Pols_Servo_Tancar, # Botó teclat D 8
            ##@     "Pols_Timbre" : Pols_Timbre, # Botó teclat 0
            ##@     "Pols_Alarma_Perimetral" : Pols_Alarma_Perimetral, # Botó teclat A
            ##@     "Pols_Alarma_Total" : Pols_Alarma_Total, # Botó teclat B
@@ -245,11 +245,13 @@ try:
     while True:
         # Realitza comunicacio
         missatge_rebut = COMs.WIFI_comunicacio(missatge_enviar)
+        #missatge_rebut = '{}'
         missatge_enviar = '{}' #els {} s'han de possar si hi ha algun canvi a enviar
         #en la primera versió, es suposa que a cada tecla s'envia el missatge. pero es possible que en altres versions s'enviin ´es canvis en un enviament i en fils
-        '''for i in range(16):
+        '''
+        for i in range(16):
             print(i)
-            time.sleep(1)
+            time.sleep(3)
             pca.alterna(i)
         '''
         #print(missatge_rebut)
